@@ -14,6 +14,9 @@ document.addEventListener('click', function(e){
     else if(e.target.id === 'tweet-btn'){
         handleTweetBtnClick()
     }
+    else if (e.target.id === 'reply-btn'){
+        HandleReplyTweetClick(e.target.dataset.respondto)
+    }
 })
  
 function handleLikeClick(tweetId){ 
@@ -48,6 +51,24 @@ function handleRetweetClick(tweetId){
 
 function handleReplyClick(replyId){
     document.getElementById(`replies-${replyId}`).classList.toggle('hidden')
+    document.getElementById(`reply-to-${replyId}`).classList.toggle('hidden')   
+}
+
+function HandleReplyTweetClick(replyId){
+    const replyInput = document.getElementById(`respond-to-${replyId}`)
+    const targetTweetObj = tweetsData.filter(function(tweet){
+        return tweet.uuid === replyId
+    })[0]
+        
+        console.log(targetTweetObj.replies)
+        console.log(replyInput.value)
+        targetTweetObj.replies.push({
+                handle: `@Scrimba`,
+                profilePic: `images/scrimbalogo.png`,
+                tweetText: replyInput.value
+            })
+    render()
+    replyInput.value = ''    
 }
 
 function handleTweetBtnClick(){
@@ -138,7 +159,12 @@ function getFeedHtml(){
     </div>
     <div class="hidden" id="replies-${tweet.uuid}">
         ${repliesHtml}
-    </div>   
+            <div class="hidden replies-input-area" id="reply-to-${tweet.uuid}">
+			<img src="images/scrimbalogo.png" class="profile-pic" id="replies-profile-pic">
+			<textarea placeholder="Send a reply!" class="reply-input" id="respond-to-${tweet.uuid}"></textarea>
+		<button id="reply-btn" data-respondto="${tweet.uuid}">Reply</button>
+    </div>
+    </div> 
 </div>
 `
    })
